@@ -9,8 +9,6 @@ import "leaflet/dist/leaflet.css";
 export default function ParentDashboard() {
   const [selectedPage, setSelectedPage] = useState("Dashboard");
   const [userLocation, setUserLocation] = useState(null);
-  const [distanceToBus, setDistanceToBus] = useState(null);
-  const [isBusNear, setIsBusNear] = useState(false); // To track if the bus is near
   const navigate = useNavigate();
 
   const kids = [
@@ -19,7 +17,7 @@ export default function ParentDashboard() {
       grade: "5", 
       busNo: "BUS-42", 
       status: "Onboard",
-      profilePic: "https://randomuser.me/api/portraits/men/1.jpg",  // Sample Profile Picture URL
+      profilePic: "https://randomuser.me/api/portraits/men/1.jpg",  
       additionalInfo: "Enjoys reading books and playing soccer."
     },
     { 
@@ -27,13 +25,12 @@ export default function ParentDashboard() {
       grade: "3", 
       busNo: "BUS-42", 
       status: "Waiting",
-      profilePic: "https://randomuser.me/api/portraits/men/2.jpg",  // Sample Profile Picture URL
+      profilePic: "https://randomuser.me/api/portraits/men/2.jpg",  
       additionalInfo: "Loves drawing and playing video games."
     },
   ];
 
-  // Bus's location coordinates (mock example)
-  const busCoordinates = { lat: 28.6139, lng: 77.2090 };  // Latitude and Longitude for Delhi
+  const busCoordinates = { lat: 28.6139, lng: 77.2090 };
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -44,37 +41,18 @@ export default function ParentDashboard() {
             lng: position.coords.longitude,
           };
           setUserLocation(userLoc);
-          calculateDistance(userLoc, busCoordinates);
         },
         () => {
           alert("Geolocation failed. Using default location.");
-          const defaultLocation = { lat: 28.6139, lng: 77.2090 }; // Default to New Delhi, India
-          setUserLocation(defaultLocation);
-          calculateDistance(defaultLocation, busCoordinates);
+          setUserLocation({ lat: 28.6139, lng: 77.2090 });
         },
         { enableHighAccuracy: true, maximumAge: 10000, timeout: 5000 }
       );
     } else {
       alert("Geolocation is not supported by this browser.");
-      const defaultLocation = { lat: 28.6139, lng: 77.2090 }; // Default to New Delhi, India
-      setUserLocation(defaultLocation);
-      calculateDistance(defaultLocation, busCoordinates);
+      setUserLocation({ lat: 28.6139, lng: 77.2090 });
     }
   }, []);
-
-  const calculateDistance = (userLoc, busLoc) => {
-    const userLatLng = L.latLng(userLoc.lat, userLoc.lng);
-    const busLatLng = L.latLng(busLoc.lat, busLoc.lng);
-    
-    const distance = userLatLng.distanceTo(busLatLng);
-    setDistanceToBus(distance);
-
-    if (distance <= 1000) {
-      setIsBusNear(true);
-    } else {
-      setIsBusNear(false);
-    }
-  };
 
   const handleSignOut = () => {
     localStorage.removeItem("authToken");
@@ -121,11 +99,10 @@ export default function ParentDashboard() {
               <KidCard key={i} {...kid} />
             ))}
 
-            {/* Interactive Map with Bus Location and User's Location */}
             <div className="col-span-full h-64 rounded-2xl overflow-hidden border-2 border-dashed border-gray-500">
               <MapContainer
                 center={userLocation ? [userLocation.lat, userLocation.lng] : [28.6139, 77.2090]}
-                zoom={userLocation ? (distanceToBus <= 1000 ? 15 : 13) : 13}
+                zoom={13}
                 style={{ width: "100%", height: "100%" }}
                 scrollWheelZoom={false}
               >
@@ -153,15 +130,6 @@ export default function ParentDashboard() {
                 </Marker>
               </MapContainer>
             </div>
-
-            {distanceToBus !== null && (
-              <div className="col-span-full mt-4 p-4 bg-gray-800 rounded-2xl text-center">
-                <h3 className="text-xl text-white">
-                  Distance to Bus: {distanceToBus.toFixed(2)} meters
-                </h3>
-                {isBusNear && <p className="text-green-400 mt-2">The bus is nearby!</p>}
-              </div>
-            )}
           </div>
         )}
 
