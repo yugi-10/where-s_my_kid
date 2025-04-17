@@ -32,7 +32,7 @@ const Login = () => {
         animate={{ opacity: 1, y: 0 }}
         className="bg-white/10 backdrop-blur-md rounded-2xl shadow-lg p-8 max-w-md w-full text-white"
       >
-        <h1 className="text-3xl font-bold text-center mb-6 font-orbitron">Where's My Kid</h1>
+        <h1 className="text-3xl font-bold text-center mb-6 font-orbitron">School Bus Tracker</h1>
 
         <div className="flex justify-center mb-4 gap-2">
           {["Admin", "Driver", "Parent"].map((r) => (
